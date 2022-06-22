@@ -1,0 +1,17 @@
+{
+    "name": "wangshukai/mn-sso-php-sdk",
+    "autoload": {
+        "psr-4": {
+            "Wangshukai\\MnSsoPhpSdk\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "jackwangshukai",
+            "email": "woshiwangshukai@gmail.com"
+        }
+    ],
+    "require": {
+        "hanson/foundation-sdk": "^5.0"
+    }
+}
