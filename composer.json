@@ -2,7 +2,7 @@
     "name": "wangshukai/mn-sso-php-sdk",
     "autoload": {
         "psr-4": {
-            "Wangshukai\\MnSsoPhpSdk\\": "src/"
+            "sso\\Dispatch\\": "src/"
         }
     },
     "authors": [
@@ -13,5 +13,13 @@
     ],
     "require": {
         "hanson/foundation-sdk": "^5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "sso\\Dispatch\\Tests\\": "test/"
+        }
     }
 }

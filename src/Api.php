@@ -5,40 +5,35 @@ namespace sso\Dispatch;
 use Dq\DqDispatch\Exception\DqDispatchException;
 use GuzzleHttp\Exception\RequestException;
 use Hanson\Foundation\AbstractAPI;
-use GuzzleHttp\Handler\CurlHandler;
-use Psr\Http\Message\RequestInterface;
-use GuzzleHttp\HandlerStack;
+use sso\Dispatch\Exception\SsoException;
 
-class Api extends AbstractAPI
+abstract class Api extends AbstractAPI
 {
 
 
     public $appKey;
     public $appSecret;
     public $gatewayUrl = "";
+    public $jumpUrl = "";
 
     public function __construct(array $config)
     {
         $this->appKey = $config['appKey'];
         $this->appSecret = $config['appSecret'];
         $this->gatewayUrl = $config['gatewayUrl'];
-    }
-
-    public function getMillisecond()
-    {
-        list($t1, $t2) = explode(' ', microtime());
-        return (float)sprintf('%.0f', (floatval($t1) + floatval($t2)) * 1000);
+        $this->jumpUrl = $config['jumpUrl'];
     }
 
     /**
      * @throws DqDispatchException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function request(string $method, array $params, string $httpMethod = 'POST')
+    public function request(string $method, array $params, string $httpMethod = 'POST',$needToken=false)
     {
-        $t = $this->getMillisecond();
-        $headerArr['token-auth'] = ' basic ' . $this->signature($t);
-        $headerArr['ts'] = $t;
+       $headerArr['token-client'] = ' basic ' . $this->signature();
+        if($needToken){
+            $headerArr['token-auth'] = ' bearer ' . $this->getToken($params);
+        }
         $jsonData = [];
         $uri = $this->gatewayUrl . $method;
         if ($httpMethod == 'POST') {
@@ -68,12 +63,13 @@ class Api extends AbstractAPI
     public function checkErrorAndThrow($result)
     {
         if (!$result) {
-            throw new DqDispatchException('返回返回数据为空', 500);
+            throw new SsoException('返回返回数据为空', 500);
         }
     }
 
-    public function signature($t): string
+    public function signature(): string
     {
-        return base64_encode($this->appKey . ":" . sha1($t . $this->appSecret));
+        return base64_encode($this->appKey . ":" . $this->appSecret);
     }
+    abstract  public  function getToken(array $params, $forceRefresh = false):string;
 }

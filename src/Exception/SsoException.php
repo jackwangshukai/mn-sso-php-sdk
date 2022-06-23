@@ -1,6 +1,6 @@
 <?php
 
-namespace sso\Dispatch\SsoException;
+namespace sso\Dispatch\Exception;
 
 class SsoException  extends \Exception
 {
